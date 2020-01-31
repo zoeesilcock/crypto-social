@@ -1,0 +1,11 @@
+FROM node:12-alpine
+
+ENV NODE_ENV $NODE_ENV
+
+WORKDIR /app
+
+ENV PATH /app/node_modules/.bin:$PATH
+
+RUN npm install --silent
+
+CMD ["npm", "start"]

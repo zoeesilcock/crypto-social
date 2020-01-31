@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  web-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile-development
+    container_name: social-network-web
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./:/app
+      - container-node-modules:/app/node_modules
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: 1
+
+volumes:
+  container-node-modules:
