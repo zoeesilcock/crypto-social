@@ -7,3 +7,10 @@ A social network which allows users to tip posters with cryptocurrency. Posts ar
 * Ganache (private blockchain)
 * Truffle 5.0.5 (framework for building smart contracts)
 * MetaMask chrome extension
+
+## Contract
+The smart contract should do the following things:
+
+* Create posts
+* List all the posts
+* Tip posts

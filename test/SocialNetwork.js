@@ -25,4 +25,23 @@ contract('SocialNetwork', ([deployer, author, tipper]) => {
       assert.equal(name, 'CryptoSocial');
     });
   });
+
+  describe('posts', async () => {
+    it('creates posts', async () => {
+      const expectedContent = 'Hello world!';
+      const result = await socialNetwork.createPost(expectedContent, { from: author });
+      const postCount = await socialNetwork.postCount();
+      const event = result.logs[0].args;
+
+      assert.equal(postCount, 1);
+      assert.equal(event.id.toNumber(), postCount.toNumber(), 'id is correct');
+      assert.equal(event.content, expectedContent, 'content is correct');
+      assert.equal(event.tipAmount, '0', 'tip amount is correct');
+      assert.equal(event.author, author, 'author is correct');
+    });
+
+    it('does not allow empty content', async () => {
+      await socialNetwork.createPost('', { from: author }).should.be.rejected;
+    });
+  });
 });
