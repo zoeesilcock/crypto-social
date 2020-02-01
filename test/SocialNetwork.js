@@ -27,10 +27,15 @@ contract('SocialNetwork', ([deployer, author, tipper]) => {
   });
 
   describe('posts', async () => {
+    const expectedContent = 'Hello world!';
+    let result, postCount;
+
+    before(async () => {
+      result = await socialNetwork.createPost(expectedContent, { from: author });
+      postCount = await socialNetwork.postCount();
+    });
+
     it('creates posts', async () => {
-      const expectedContent = 'Hello world!';
-      const result = await socialNetwork.createPost(expectedContent, { from: author });
-      const postCount = await socialNetwork.postCount();
       const event = result.logs[0].args;
 
       assert.equal(postCount, 1);
@@ -42,6 +47,15 @@ contract('SocialNetwork', ([deployer, author, tipper]) => {
 
     it('does not allow empty content', async () => {
       await socialNetwork.createPost('', { from: author }).should.be.rejected;
+    });
+
+    it('lists posts', async () => {
+      const post = await socialNetwork.posts(postCount);
+
+      assert.equal(post.id.toNumber(), postCount.toNumber(), 'id is correct');
+      assert.equal(post.content, expectedContent, 'content is correct');
+      assert.equal(post.tipAmount, '0', 'tip amount is correct');
+      assert.equal(post.author, author, 'author is correct');
     });
   });
 });
