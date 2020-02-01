@@ -57,5 +57,31 @@ contract('SocialNetwork', ([deployer, author, tipper]) => {
       assert.equal(post.tipAmount, '0', 'tip amount is correct');
       assert.equal(post.author, author, 'author is correct');
     });
+
+    it('allows users to tip posts', async () => {
+      const tip = web3.utils.toWei('1', 'Ether');
+      const tipAmount = new web3.utils.BN(tip);
+      let oldAuthorBalance = await web3.eth.getBalance(author);
+      oldAuthorBalance = new web3.utils.BN(oldAuthorBalance);
+      const expectedBalance = oldAuthorBalance.add(tipAmount);
+
+      result = await socialNetwork.tipPost(postCount, { from: tipper, value: tip });
+
+      const event = result.logs[0].args;
+      assert.equal(event.id.toNumber(), postCount.toNumber(), 'id is correct');
+      assert.equal(event.content, expectedContent, 'content is correct');
+      assert.equal(event.tipAmount, '1000000000000000000', 'tip amount is correct');
+      assert.equal(event.author, author, 'author is correct');
+
+      let newAuthorBalance = await web3.eth.getBalance(author);
+      newAuthorBalance = new web3.utils.BN(newAuthorBalance);
+
+      assert.equal(newAuthorBalance.toString(), expectedBalance.toString());
+    });
+
+    it('does not allow tipping a post that does not exist', async () => {
+      const tip = web3.utils.toWei('1', 'Ether');
+      await socialNetwork.tipPost(99, { from: tipper, value: tip }).should.be.rejected;
+    })
   });
 });
