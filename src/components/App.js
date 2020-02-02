@@ -3,6 +3,8 @@ import Web3 from 'web3';
 
 import './App.css';
 import Navbar from './Navbar';
+import PostListItem from './PostListItem';
+import SocialNetwork from '../abis/SocialNetwork.json';
 
 class App extends Component {
   constructor(props) {
@@ -10,6 +12,8 @@ class App extends Component {
 
     this.state = {
       account: '',
+      postCount: 0,
+      posts: [],
     }
   }
 
@@ -35,8 +39,24 @@ class App extends Component {
   async loadBlockchainData() {
     const web3 = window.web3;
     const accounts = await web3.eth.getAccounts();
+    const networkId = await web3.eth.net.getId();
+    const networkData = SocialNetwork.networks[networkId];
+    let socialNetwork = null;
+    let postCount = 0;
+    let posts = [];
 
-    this.setState({ account: accounts[0] });
+    if (networkData) {
+      socialNetwork = new web3.eth.Contract(SocialNetwork.abi, networkData.address);
+      postCount = await socialNetwork.methods.postCount().call();
+
+      for (let i = 1; i <= postCount; i++) {
+        posts.push(await socialNetwork.methods.posts(i).call());
+      }
+    } else {
+      window.alert('SocialNetwork contract has not been deployed to the blockchain.');
+    }
+
+    this.setState({ account: accounts[0], socialNetwork, postCount, posts });
   }
 
   render() {
@@ -45,9 +65,9 @@ class App extends Component {
         <Navbar account={this.state.account} />
         <div className="container-fluid mt-5">
           <div className="row">
-            <main role="main" className="col-lg-12 d-flex text-center">
+            <main role="main" className="col-lg-12 ml-auto mr-auto" style={{ maxWidth: '500px' }}>
               <div className="content mr-auto ml-auto">
-                Hello World
+                {this.state.posts.map((post, key) => <PostListItem post={post} key={key} />)}
               </div>
             </main>
           </div>
