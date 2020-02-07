@@ -4,6 +4,10 @@ import PostForm from './PostForm';
 import PostListItem from './PostListItem';
 
 class Main extends Component {
+  sortByTips = (a, b) => {
+    return b.tipAmount - a.tipAmount;
+  }
+
   render() {
     return (
       <div className="container-fluid mt-5">
@@ -13,7 +17,7 @@ class Main extends Component {
               onCreatePost={this.props.onCreatePost}
             />
             <div className="content mr-auto ml-auto">
-              {this.props.posts.map((post, key) => (
+              {this.props.posts.sort(this.sortByTips).map((post, key) => (
                 <PostListItem
                   post={post}
                   key={key}
