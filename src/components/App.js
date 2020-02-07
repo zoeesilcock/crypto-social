@@ -3,7 +3,7 @@ import Web3 from 'web3';
 
 import './App.css';
 import Navbar from './Navbar';
-import PostListItem from './PostListItem';
+import Main from './Main';
 import SocialNetwork from '../abis/SocialNetwork.json';
 
 class App extends Component {
@@ -14,6 +14,7 @@ class App extends Component {
       account: '',
       postCount: 0,
       posts: [],
+      loading: true,
     }
   }
 
@@ -56,22 +57,26 @@ class App extends Component {
       window.alert('SocialNetwork contract has not been deployed to the blockchain.');
     }
 
-    this.setState({ account: accounts[0], socialNetwork, postCount, posts });
+    this.setState({ account: accounts[0], loading: false, socialNetwork, postCount, posts });
+  }
+
+  handleCreatePost = (content) => {
+    this.setState({ loading: true });
+
+    this.state.socialNetwork.methods.createPost(content).send({ from: this.state.account })
+    .once('receipt', () => {
+      this.setState({ loading:false });
+    });
   }
 
   render() {
     return (
       <div>
         <Navbar account={this.state.account} />
-        <div className="container-fluid mt-5">
-          <div className="row">
-            <main role="main" className="col-lg-12 ml-auto mr-auto" style={{ maxWidth: '500px' }}>
-              <div className="content mr-auto ml-auto">
-                {this.state.posts.map((post, key) => <PostListItem post={post} key={key} />)}
-              </div>
-            </main>
-          </div>
-        </div>
+        {this.state.loading ?
+          <div id="loader" className="text-center mt-5"><p>Loading...</p></div> :
+          <Main posts={this.state.posts} onCreatePost={this.handleCreatePost} />
+        }
       </div>
     );
   }

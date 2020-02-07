@@ -5,7 +5,7 @@ import Identicon from 'identicon.js';
 class PostListItem extends Component {
   render() {
     return (
-      <div className="card nb-4">
+      <div className="card mb-4">
         <div className="card-header">
           <img
             className="mr-2"
