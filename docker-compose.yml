@@ -1,11 +1,11 @@
 version: '3.7'
 
 services:
-  web-dev:
+  web:
     build:
       context: .
       dockerfile: Dockerfile-development
-    container_name: social-network-web
+    container_name: crypto-social
     stdin_open: true
     tty: true
     volumes:
