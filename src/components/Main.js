@@ -9,9 +9,17 @@ class Main extends Component {
       <div className="container-fluid mt-5">
         <div className="row">
           <main role="main" className="col-lg-12 ml-auto mr-auto" style={{ maxWidth: '500px' }}>
-            <PostForm onCreatePost={this.props.onCreatePost} />
+            <PostForm
+              onCreatePost={this.props.onCreatePost}
+            />
             <div className="content mr-auto ml-auto">
-              {this.props.posts.map((post, key) => <PostListItem post={post} key={key} />)}
+              {this.props.posts.map((post, key) => (
+                <PostListItem
+                  post={post}
+                  key={key}
+                  onTipPost={this.props.onTipPost}
+                />
+              ))}
             </div>
           </main>
         </div>
@@ -23,6 +31,7 @@ class Main extends Component {
 Main.propTypes = {
   posts: PropTypes.array.isRequired,
   onCreatePost: PropTypes.func.isRequired,
+  onTipPost: PropTypes.func.isRequired,
 }
 
 export default Main;

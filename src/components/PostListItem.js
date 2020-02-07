@@ -24,8 +24,11 @@ class PostListItem extends Component {
             <small className="float-left mt-1 text-muted">
               Tips: {window.web3.utils.fromWei(this.props.post.tipAmount.toString(), 'Ether')} ETH
             </small>
-            <button className="btn btn-link btn-sm float-right pt-0">
-              <span>Tip 0.1 ETH</span>
+            <button
+              className="btn btn-link btn-sm float-right pt-0"
+              onClick={() => this.props.onTipPost(this.props.post.id, window.web3.utils.toWei('0.1', 'Ether'))}
+            >
+              Tip 0.1 ETH
             </button>
           </li>
         </ul>
@@ -36,6 +39,7 @@ class PostListItem extends Component {
 
 PostListItem.propTypes = {
   post: PropTypes.object.isRequired,
+  onTipPost: PropTypes.func.isRequired,
 }
 
 export default PostListItem;

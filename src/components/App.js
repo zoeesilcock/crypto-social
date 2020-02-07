@@ -65,7 +65,16 @@ class App extends Component {
 
     this.state.socialNetwork.methods.createPost(content).send({ from: this.state.account })
     .once('receipt', () => {
-      this.setState({ loading:false });
+      this.loadBlockchainData();
+    });
+  }
+
+  handleTipPost = (postId, tipAmount) => {
+    this.setState({ loading: true });
+
+    this.state.socialNetwork.methods.tipPost(postId).send({ from: this.state.account, value: tipAmount })
+    .once('receipt', () => {
+      this.loadBlockchainData();
     });
   }
 
@@ -75,7 +84,11 @@ class App extends Component {
         <Navbar account={this.state.account} />
         {this.state.loading ?
           <div id="loader" className="text-center mt-5"><p>Loading...</p></div> :
-          <Main posts={this.state.posts} onCreatePost={this.handleCreatePost} />
+          <Main
+            posts={this.state.posts}
+            onCreatePost={this.handleCreatePost}
+            onTipPost={this.handleTipPost}
+          />
         }
       </div>
     );
